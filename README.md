@@ -3,8 +3,8 @@ A Terraform repository containing configurations for provisioning Kubernetes inf
 
 This is the multicloud Terraform modules configuration for the followings :
 
-AWS EKS
-Azure AKS
+AWS EKS , 
+Azure AKS , 
 GCP GKE 
 
 Pre-requisites: Terraform 0.14+ 
