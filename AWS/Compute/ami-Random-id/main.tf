@@ -1,4 +1,11 @@
-# Create EC2 instance 
+resource "random_id" "server" {
+  keepers = {
+    # Generate a new id each time we switch to a new AMI id
+    ami_id = var.ami_id
+  }
+
+  byte_length = 8
+}
 
 resource "aws_vpc" "vpc" {
   cidr_block           = var.cidr_vpc
@@ -63,18 +70,18 @@ resource "aws_security_group" "sg_22_80" {
   }
 }
 
-resource "aws_instance" "web" {
-  ami                         = "ami-0c02fb55956c7d316"
+
+resource "aws_instance" "server" {
+  tags = {
+    Name = "web-server ${random_id.server.hex}"
+  }
+
+  # Read the AMI id "through" the random_id resource to ensure that
+  # both will change together.
+  ami = random_id.server.keepers.ami_id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.subnet_public.id
   vpc_security_group_ids      = [aws_security_group.sg_22_80.id]
   associate_public_ip_address = true
-
-  tags = {
-    Name = "Learn-Packer"
-  }
+  
 }
-/*
-output "public_ip" {
-  value = aws_instance.web.public_ip
-} */
